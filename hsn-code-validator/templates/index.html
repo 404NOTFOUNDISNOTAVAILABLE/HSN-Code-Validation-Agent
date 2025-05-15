@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSN Code Validator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HSN Code Validation Agent</h1>
+            <p>Validate Harmonized System Nomenclature (HSN) codes against master data</p>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2>Validate HSN Codes</h2>
+                <form action="/validate/form" method="post">
+                    <div class="form-group">
+                        <label for="hsn-codes">Enter HSN Codes:</label>
+                        <textarea id="hsn-codes" name="hsn_codes" rows="5" placeholder="Enter one or more HSN codes, separated by commas or new lines" required></textarea>
+                    </div>
+                    <div class="form-group checkbox">
+                        <input type="checkbox" id="include-hierarchy" name="include_hierarchy">
+                        <label for="include-hierarchy">Include hierarchical validation</label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn primary">Validate</button>
+                        <button type="reset" class="btn secondary">Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card info">
+                <h2>About HSN Codes</h2>
+                <p>HSN codes are an internationally standardized system of names and numbers to classify traded products. They vary in length, typically from 2 to 8 digits, where each level of digits represents a more specific classification.</p>
+                <p>Examples:</p>
+                <ul>
+                    <li><strong>01</strong> - LIVE ANIMALS</li>
+                    <li><strong>0101</strong> - LIVE HORSES, ASSES, MULES AND HINNIES</li>
+                    <li><strong>01011010</strong> - LIVE HORSES, ASSES, MULES AND HINNIES PURE-BRED BREEDING ANIMALS HORSES</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>HSN Code Validation Agent &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

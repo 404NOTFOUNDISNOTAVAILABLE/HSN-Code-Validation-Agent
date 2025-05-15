@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSN Code Validation Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HSN Code Validation Results</h1>
+            <a href="/" class="btn secondary">Back to Validator</a>
+        </header>
+
+        <main>
+            {% if response.response_type == 'error' %}
+                <div class="card error">
+                    <h2>Error</h2>
+                    <p>{{ response.message }}</p>
+                </div>
+            {% elif response.response_type == 'valid_hsn' %}
+                <div class="card success">
+                    <h2>Valid HSN Code</h2>
+                    <div class="result">
+                        <div class="code">{{ response.code }}</div>
+                        <div class="description">{{ response.description }}</div>
+                    </div>
+                    {% if 'hierarchy_valid' in response %}
+                        <h3>Hierarchical Validation</h3>
+                        {% if response.hierarchy_valid %}
+                            <p>All parent codes are valid.</p>
+                            <h4>Valid Parent Codes:</h4>
+                            <ul class="parent-list">
+                                {% for parent in response.parent_codes.valid %}
+                                    <li><strong>{{ parent.code }}</strong>: {{ parent.description }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="warning">Some parent codes are invalid.</p>
+                            <h4>Valid Parent Codes:</h4>
+                            <ul class="parent-list">
+                                {% for parent in response.parent_codes.valid %}
+                                    <li><strong>{{ parent.code }}</strong>: {{ parent.description }}</li>
+                                {% endfor %}
+                            </ul>
+                            <h4>Invalid Parent Codes:</h4>
+                            <ul class="parent-list invalid">
+                                {% for parent in response.parent_codes.invalid %}
+                                    <li><strong>{{ parent }}</strong></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% elif response.response_type == 'invalid_hsn' %}
+                <div class="card error">
+                    <h2>Invalid HSN Code</h2>
+                    <div class="result">
+                        <div class="code">{{ response.code }}</div>
+                        <div class="reason">Reason: {{ response.reason }}</div>
+                    </div>
+                </div>
+            {% elif response.response_type == 'multiple_hsn_results' %}
+                <div class="card summary">
+                    <h2>Validation Summary</h2>
+                    <div class="summary-stats">
+                        <p>{{ response.summary }}</p>
+                        <div class="stats">
+                            <div class="stat valid">
+                                <span class="count">{{ response.valid_count }}</span>
+                                <span class="label">Valid</span>
+                            </div>
+                            <div class="stat invalid">
+                                <span class="count">{{ response.invalid_count }}</span>
+                                <span class="label">Invalid</span>
+                            </div>
+                            <div class="stat total">
+                                <span class="count">{{ response.total }}</span>
+                                <span class="label">Total</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card results-list">
+                    <h2>Detailed Results</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>HSN Code</th>
+                                <th>Status</th>
+                                <th>Description / Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in response.results.results %}
+                                <tr class="{{ 'valid' if result.valid else 'invalid' }}">
+                                    <td>{{ result.code }}</td>
+                                    <td>{{ 'Valid' if result.valid else 'Invalid' }}</td>
+                                    <td>
+                                        {% if result.valid %}
+                                            {{ result.description }}
+                                        {% else %}
+                                            {{ result.reason }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </main>
+
+        <footer>
+            <p>HSN Code Validation Agent &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
